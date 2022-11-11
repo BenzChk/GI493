@@ -53,9 +53,9 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Script\UpdateSprites.cs" />
+     <Compile Include="Assets\Script\Selectable.cs" />
      <Compile Include="Assets\Script\UserInput.cs" />
      <Compile Include="Assets\Script\Solitaire.cs" />
-     <Compile Include="Assets\Script\Selectable.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2020.3.23f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
  </Reference>

@@ -9,8 +9,7 @@ public class UpdateSprites : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Selectable selectable;
     private Solitaire solitaire;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         List<string> deck = Solitaire.GenerateDeck();
