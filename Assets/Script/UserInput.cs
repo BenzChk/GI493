@@ -5,10 +5,12 @@ using UnityEngine;
 public class UserInput : MonoBehaviour
 {
     private Solitaire solitaire;
+    public GameObject slot1;
     
     void Start()
     {
         solitaire = FindObjectOfType<Solitaire>();
+        slot1 = this.gameObject;
     }
     
     void Update()
@@ -56,6 +58,25 @@ public class UserInput : MonoBehaviour
     void Card(GameObject selected)
     {
         print("Clicked on Card");
+        
+        if (slot1 == this.gameObject) 
+        {
+            slot1 = selected;
+        }
+        
+        else if (slot1 != selected)
+        {
+            if (Stackable(selected))
+            {
+                
+            }
+            else
+            {
+                slot1 = selected;
+            }
+            
+        }
+
     }
     
     void Top(GameObject selected)
@@ -66,5 +87,57 @@ public class UserInput : MonoBehaviour
     void Bottom(GameObject selected)
     {
         print("Clicked on Bottom");
+    }
+
+    bool Stackable(GameObject selected)
+    {
+        Selectable s1 = slot1.GetComponent<Selectable>();
+        Selectable s2 = selected.GetComponent<Selectable>();
+
+        if (s2.top)
+        {
+            if (s1.suit == s2.suit || (s1.value == 1 && s2.suit == null))
+            {
+                if (s1.value == s2.value + 1)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        else
+        {
+            if (s1.value == s2.value - 1)
+            {
+                bool card1Red = true;
+                bool card2Red = true;
+
+                if (s1.suit == "C" || s1.suit == "S")
+                {
+                    card1Red = false;
+                }
+
+                if (s2.suit == "C" || s2.suit == "S")
+                {
+                    card2Red = false;
+                }
+                
+                if (card1Red == card2Red)
+                {
+                    print("not Stackable");
+                    return false;
+                }
+                else
+                {
+                    print("Stackable");
+                    return true;
+                }
+            } 
+        }
+        return false;
     }
 }
