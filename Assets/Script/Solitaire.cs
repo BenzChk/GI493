@@ -50,6 +50,11 @@ public class Solitaire : MonoBehaviour
 
     public void PlayCards()
     {
+        foreach (List<string> list in bottoms)
+        {
+            list.Clear();
+        }
+        
         deck = GenerateDeck();
         Shuffle(deck);
 

@@ -5,7 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/Start.unity
+    guid: 0409b2908de01be4c8bd463f066dc402
+  - enabled: 1
+    path: Assets/Scenes/SolitaireGame.unity
+    guid: 7aee90f4bfc1e894d9eb9e82416162d0
   m_configObjects: {}

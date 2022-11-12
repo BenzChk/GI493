@@ -7,6 +7,9 @@ public class UserInput : MonoBehaviour
 {
     private Solitaire solitaire;
     public GameObject slot1;
+    private float timer;
+    private float doubleClickTime = 0.3f;
+    private int clickCount = 0;
     
     void Start()
     {
@@ -16,6 +19,21 @@ public class UserInput : MonoBehaviour
     
     void Update()
     {
+        if (clickCount == 1)
+        {
+            timer += Time.deltaTime;
+        }
+        if (clickCount == 3)
+        {
+            timer = 0;
+            clickCount = 1;
+        }
+        if (timer > doubleClickTime)
+        {
+            timer = 0;
+            clickCount = 0;
+        }
+
         GetMouseClick();
     }
     
@@ -23,8 +41,7 @@ public class UserInput : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            
-
+            clickCount++;
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (hit)
@@ -54,6 +71,7 @@ public class UserInput : MonoBehaviour
     {
         print("Clicked on deck");
         solitaire.DealFromDeck();
+        slot1 = this.gameObject;
     }
     
     void Card(GameObject selected)
@@ -61,7 +79,7 @@ public class UserInput : MonoBehaviour
         print("Clicked on Card");
         if (!selected.GetComponent<Selectable>().faceUp)
         {
-            if (!Blocked(selected)) // if the card clicked on is not blocked
+            if (!Blocked(selected)) // if card clicked is not blocked
             {
                 selected.GetComponent<Selectable>().faceUp = true;
                 slot1 = this.gameObject;
@@ -72,7 +90,17 @@ public class UserInput : MonoBehaviour
         {
             if (!Blocked(selected))
             {
-                slot1 = selected;
+                if (slot1 == selected) 
+                {
+                    if (DoubleClick())
+                    {
+                        AutoStack(selected);
+                    }
+                }
+                else
+                {
+                    slot1 = selected;
+                }
             }
         }
 
@@ -93,6 +121,14 @@ public class UserInput : MonoBehaviour
                 else
                 {
                     slot1 = selected;
+                }
+            }
+            else if (slot1 == selected) 
+            {
+                if (DoubleClick())
+                {
+                    
+                    AutoStack(selected);
                 }
             }
         }
@@ -252,6 +288,84 @@ public class UserInput : MonoBehaviour
             {
                 return true;
             }
+        }
+    }
+    
+    bool DoubleClick()
+    {
+        if (timer < doubleClickTime && clickCount == 2)
+        {
+            print("Double Click");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    void AutoStack(GameObject selected)
+    {
+        for (int i = 0; i < solitaire.topPos.Length; i++)
+        {
+            Selectable stack = solitaire.topPos[i].GetComponent<Selectable>();
+            if (selected.GetComponent<Selectable>().value == 1) 
+            {
+                if (solitaire.topPos[i].GetComponent<Selectable>().value == 0) 
+                {
+                    slot1 = selected;
+                    Stack(stack.gameObject); 
+                }
+            }
+            else
+            {
+                if ((solitaire.topPos[i].GetComponent<Selectable>().suit == slot1.GetComponent<Selectable>().suit) && (solitaire.topPos[i].GetComponent<Selectable>().value == slot1.GetComponent<Selectable>().value - 1))
+                {
+                    // if it is the last card (if it has no children)
+                    if (HasNoChildren(slot1))
+                    {
+                        slot1 = selected;
+                        // find a top spot that matches the conditions for auto stacking if it exists
+                        string lastCardname = stack.suit + stack.value.ToString();
+                        if (stack.value == 1)
+                        {
+                            lastCardname = stack.suit + "A";
+                        }
+                        if (stack.value == 11)
+                        {
+                            lastCardname = stack.suit + "J";
+                        }
+                        if (stack.value == 12)
+                        {
+                            lastCardname = stack.suit + "Q";
+                        }
+                        if (stack.value == 13)
+                        {
+                            lastCardname = stack.suit + "K";
+                        }
+                        GameObject lastCard = GameObject.Find(lastCardname);
+                        Stack(lastCard);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    bool HasNoChildren(GameObject card)
+    {
+        int i = 0;
+        foreach (Transform child in card.transform)
+        {
+            i++;
+        }
+        if (i == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
